@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meertje, wil jij mijn Valentijn zijn?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff5f8a, #ff9aa2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    /* Falling lily petals */
+    .petal {
+      position: absolute;
+      top: -10%;
+      width: 18px;
+      height: 36px;
+      background: radial-gradient(
+        ellipse at center,
+        #fff5f7 0%,
+        #ff94bc 60%,
+        #ff5f8a 100%
+      );
+      border-radius: 60% 60% 70% 70%;
+      transform-origin: center;
+      animation: fall linear infinite, sway ease-in-out infinite;
+      pointer-events: none;
+      filter: blur(0.2px);
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(120vh) rotate(320deg); opacity: 0.8; }
+    }
+
+    @keyframes sway {
+      0%   { margin-left: 0; }
+      50%  { margin-left: 50px; }
+      100% { margin-left: -50px; }
+    }
+
+    .lily {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: 0;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+    }
+
+    .top-left { top: -20px; left: -20px; transform: rotate(45deg); }
+    .top-right { top: -20px; right: -20px; transform: scaleX(-1) rotate(45deg); }
+    .bottom-left { bottom: -20px; left: -20px; transform: scaleY(-1) rotate(-500deg); }
+    .bottom-right { bottom: -20px; right: -20px; transform: scale(-1, -1) rotate(-500deg); }
+
+    .card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      padding: 50px 32px;
+      border-radius: 24px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h1 { margin: 0 0 24px; font-size: 2.2rem; text-shadow: 1px 1px 4px rgba(0,0,0,0.1); }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      min-height: 60px;
+      position: relative;
+    }
+
+    button {
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.3s ease;
+    }
+
+    #yes { background: #fff; color: #ff5f8a; }
+    #no { background: #e74c3c; color: #fff; position: relative; }
+
+    .hidden { display: none; }
+    .message { font-size: 1.5rem; margin-top: 16px; animation: fadeIn 0.5s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <svg style="display: none;">
+    <symbol id="real-lily" viewBox="0 0 200 200">
+      <path d="M100 100 Q140 10 100 0 Q60 10 100 100" fill="#ffb6c1" />
+      <path d="M100 100 Q190 60 200 100 Q190 140 100 100" fill="#ffc0cb" />
+      <path d="M100 100 Q10 60 0 100 Q10 140 100 100" fill="#ffc0cb" />
+      <path d="M100 100 Q150 180 100 200 Q50 180 100 100" fill="#fff" />
+      <path d="M100 100 Q180 30 170 70 Q130 40 100 100" fill="#fffcfd" />
+      <path d="M100 100 Q20 30 30 70 Q70 40 100 100" fill="#fffcfd" />
+      <path d="M100 190 Q100 150 100 110" stroke="#ff8fb3" stroke-width="1" fill="none" opacity="0.6"/>
+      <g stroke="#d4af37" stroke-width="1.5">
+        <line x1="100" y1="100" x2="110" y2="70" />
+        <line x1="100" y1="100" x2="90" y2="70" />
+        <line x1="100" y1="100" x2="100" y2="65" />
+      </g>
+      <circle cx="110" cy="70" r="3" fill="#8b4513" />
+      <circle cx="90" cy="70" r="3" fill="#8b4513" />
+      <circle cx="100" cy="65" r="3" fill="#8b4513" />
+      <circle cx="100" cy="100" r="6" fill="#f8d7da" />
+    </symbol>
+  </svg>
+
+  <svg class="lily top-left"><use href="#real-lily"/></svg>
+  <svg class="lily top-right"><use href="#real-lily"/></svg>
+  <svg class="lily bottom-left"><use href="#real-lily"/></svg>
+  <svg class="lily bottom-right"><use href="#real-lily"/></svg>
+
+  <div class="card">
+    <h1 id="question">Meertje, wil jij mijn Valentijn zijn?</h1>
+
+    <div class="buttons" id="buttons">
+      <button id="yes">Ja</button>
+      <button id="no">Nee</button>
+    </div>
+
+    <div class="message hidden" id="message">
+      Beste beslissing van het jaar. 🤍
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const buttons = document.getElementById("buttons");
+    const message = document.getElementById("message");
+    const question = document.getElementById("question");
+
+    noBtn.addEventListener("mouseenter", () => {
+      noBtn.style.position = "absolute";
+      const x = Math.random() * (window.innerWidth - 100) - (window.innerWidth / 2 - 50);
+      const y = Math.random() * (window.innerHeight - 100) - (window.innerHeight / 2 - 50);
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    });
+
+    yesBtn.addEventListener("click", () => {
+      buttons.classList.add("hidden");
+      question.textContent = "Officieel mijn Valentijn";
+      message.classList.remove("hidden");
+    });
+
+    for (let i = 0; i < 35; i++) {
+      const petal = document.createElement("div");
+      petal.className = "petal";
+      petal.style.left = Math.random() * 100 + "vw";
+      petal.style.animationDuration = 7 + Math.random() * 6 + "s";
+      petal.style.animationDelay = Math.random() * 6 + "s";
+      petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(petal);
+    }
+  </script>
+</body>
+</html>
